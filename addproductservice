@@ -1,0 +1,61 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+
+<%@ page
+	import="java.sql.*, java.io.*, javax.servlet.*, javax.servlet.http.*"%>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adding Vegetable</title>
+</head>
+<body>
+	<%
+	String name = request.getParameter("name");
+	String brand_id = request.getParameter("brand_id");
+	double price = Double.parseDouble(request.getParameter("price"));
+	String size = request.getParameter("size");
+	String color = request.getParameter("color");
+	String specification = request.getParameter("specification");
+	out.print(name+" "+price);
+	   Connection conn = null;
+       String url = "jdbc:mysql://localhost:3306/ultras"; // Replace with your MySQL database URL
+       String username = "root"; // Replace with your MySQL username
+       String password = ""; // Replace with your MySQL password
+       
+	
+  try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(url, username, password);
+            // Inserting data into database
+            String sql = "INSERT INTO products (name, brand_id, price, size, color, specification) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, name);
+            statement.setString(2, brand_id);
+            statement.setDouble(3, price);
+            statement.setString(4, size);
+            statement.setString(5, color);
+            statement.setString(6, specification);
+
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                out.println("<h3>product added successfully.</h3>");
+            } else {
+                out.println("<h3>Failed to add product.</h3>");
+            }
+        } catch (Exception e) {
+            out.println("<h3>Error: " + e.getMessage() + "</h3>");
+        } finally {
+            try {
+                if (conn!= null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                out.println("<h3>Error closing the database connection: " + e.getMessage() + "</h3>");
+            }
+        }
+    %>
+</body>
+</htm>
